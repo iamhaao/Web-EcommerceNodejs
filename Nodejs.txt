@@ -1,0 +1,11 @@
+Nodejs
+
+*Command 
+npm init
+npm install nodemon --save-dev
+npm install express -g ( De tai express ve)
+npm install --save body-paser ( De parsing json to Object gui tu requert)
+npm install express express-handlebars
+npm install --save mysql2
+npm install --save sequelize
+npm install --svae mongodb
