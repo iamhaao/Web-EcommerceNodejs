@@ -1,8 +1,9 @@
 const Product = require('../models/product');
 const { validationResult } = require('express-validator');
-
 const mongodb = require('mongodb');
 const ObjectId = mongodb.ObjectId;
+const fileHepler = require('../util/file');
+
 exports.postAddProduct = (req, res, next) => {
     const title = req.body.title;
     const image = req.file;
@@ -156,6 +157,7 @@ exports.postEditProduct = (req, res, next) => {
             product.price = updatedPrice;
             product.description = updatedDesc;
             if (image) {
+                fileHepler.deleteFile(product.imageUrl);
                 product.imageUrl = image.path;
             }
             return product.save();
@@ -175,8 +177,13 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
     const prodId = req.body.productId;
-    Product
-        .deleteOne({ _id: prodId, userId: req.user._id })
+    Product.findById(prodId).then(product => {
+        if (!product) {
+            return next(new Error('Product Not Found!!!'));
+        }
+        fileHepler.deleteFile(product.imageUrl);
+        return Product.deleteOne({ _id: prodId, userId: req.user._id });
+    })
         .then(result => {
             console.log('Delete Sucessfull');
             res.redirect('/admin/products');
@@ -185,5 +192,5 @@ exports.postDeleteProduct = (req, res, next) => {
             const error = new Error(err);
             error.httpStatusCode = 500;
             return next(error);
-        })
+        });
 };
