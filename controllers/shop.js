@@ -6,7 +6,7 @@ const Order = require('../models/order');
 const mongoose = require('mongoose');
 const PDFDocument = require('pdfkit');
 const product = require('../models/product');
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 3;
 
 exports.getIndex = (req, res, next) => {
     const page = +req.query.page || 1;
